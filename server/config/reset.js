@@ -6,17 +6,26 @@ import exteriorsData from "./data/exteriors.js";
 import interiorsData from "./data/interiors.js";
 import carsData from "./data/cars.js";
 
+const dropTable = async (tableName) => {
+  const query = `DROP TABLE IF EXISTS ${tableName};`;
+
+  try {
+    await pool.query(query);
+    console.log(`🎉 ${tableName} table dropped successfully`);
+  } catch (err) {
+    console.error(`⚠️ error dropping ${tableName} table`, err);
+  }
+};
+
 const createTable = async (tableName, schema) => {
   const query = `
-    DROP TABLE IF EXISTS ${tableName};
-
     CREATE TABLE IF NOT EXISTS ${tableName} (
       ${schema}
     )
   `;
 
   try {
-    const res = await pool.query(query);
+    await pool.query(query);
     console.log(`🎉 ${tableName} table created successfully`);
   } catch (err) {
     console.error(`⚠️ error creating ${tableName} table`, err);
@@ -35,13 +44,11 @@ const seedRoofsTable = async () => {
   await createTable("roofs", schema);
 
   roofsData.forEach((roof) => {
-    const insertQuery = {
-      text: "INSERT INTO roofs (color, image, price, is_convertible) VALUES ($1, $2, $3, $4)",
-    };
-
+    const query =
+      "INSERT INTO roofs (color, image, price, is_convertible) VALUES ($1, $2, $3, $4)";
     const values = [roof.color, roof.image, roof.price, roof.isConvertible];
 
-    pool.query(insertQuery, values, (err, res) => {
+    pool.query(query, values, (err, _res) => {
       if (err) {
         console.error("⚠️ error inserting roof", err);
         return;
@@ -63,13 +70,11 @@ const seedWheelsTable = async () => {
   await createTable("wheels", schema);
 
   wheelsData.forEach((wheel) => {
-    const insertQuery = {
-      text: "INSERT INTO wheels (color, image, price) VALUES ($1, $2, $3)",
-    };
-
+    const query =
+      "INSERT INTO wheels (color, image, price) VALUES ($1, $2, $3)";
     const values = [wheel.color, wheel.image, wheel.price];
 
-    pool.query(insertQuery, values, (err, res) => {
+    pool.query(query, values, (err, _res) => {
       if (err) {
         console.error("⚠️ error inserting wheel", err);
         return;
@@ -91,13 +96,11 @@ const seedExteriorsTable = async () => {
   await createTable("exteriors", schema);
 
   exteriorsData.forEach((exterior) => {
-    const insertQuery = {
-      text: "INSERT INTO exteriors (color, image, price) VALUES ($1, $2, $3)",
-    };
-
+    const query =
+      "INSERT INTO exteriors (color, image, price) VALUES ($1, $2, $3)";
     const values = [exterior.color, exterior.image, exterior.price];
 
-    pool.query(insertQuery, values, (err, res) => {
+    pool.query(query, values, (err, _res) => {
       if (err) {
         console.error("⚠️ error inserting exterior", err);
         return;
@@ -119,13 +122,11 @@ const seedInteriorsTable = async () => {
   await createTable("interiors", schema);
 
   interiorsData.forEach((interior) => {
-    const insertQuery = {
-      text: "INSERT INTO interiors (color, image, price) VALUES ($1, $2, $3)",
-    };
-
+    const query =
+      "INSERT INTO interiors (color, image, price) VALUES ($1, $2, $3)";
     const values = [interior.color, interior.image, interior.price];
 
-    pool.query(insertQuery, values, (err, res) => {
+    pool.query(query, values, (err, _res) => {
       if (err) {
         console.error("⚠️ error inserting interior", err);
         return;
@@ -143,7 +144,7 @@ const seedCarsTable = async () => {
       price INTEGER NOT NULL,
       is_convertible BOOLEAN NOT NULL,
       roof INTEGER REFERENCES roofs (id),
-      wheel INTEGER REFERENCES wheels (id),
+      wheels INTEGER REFERENCES wheels (id),
       exterior INTEGER REFERENCES exteriors (id),
       interior INTEGER REFERENCES interiors (id)
   `;
@@ -152,19 +153,19 @@ const seedCarsTable = async () => {
 
   carsData.forEach((car) => {
     const query =
-      "INSERT INTO cars (name, price, is_convertible, roof, wheel, exterior, interior) VALUES ($1, $2, $3, $4, $5, $6, $7);";
+      "INSERT INTO cars (name, price, is_convertible, roof, wheels, exterior, interior) VALUES ($1, $2, $3, $4, $5, $6, $7);";
 
     const values = [
       car.name,
       car.price,
       car.isConvertible,
       car.roof,
-      car.wheel,
+      car.wheels,
       car.exterior,
       car.interior,
     ];
 
-    pool.query(query, values, (err, res) => {
+    pool.query(query, values, (err, _res) => {
       if (err) {
         console.error("⚠️ error inserting interior", err);
         return;
@@ -175,8 +176,14 @@ const seedCarsTable = async () => {
   });
 };
 
-seedRoofsTable();
-seedWheelsTable();
-seedExteriorsTable();
-seedInteriorsTable();
-seedCarsTable();
+await dropTable("cars");
+await dropTable("roofs");
+await dropTable("wheels");
+await dropTable("exteriors");
+await dropTable("interiors");
+
+await seedRoofsTable();
+await seedWheelsTable();
+await seedExteriorsTable();
+await seedInteriorsTable();
+await seedCarsTable();
