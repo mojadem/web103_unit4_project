@@ -19,18 +19,12 @@ export default [
   },
   {
     id: 4,
-    color: "Body Color",
-    price: 500,
-    isConvertible: true,
-  },
-  {
-    id: 5,
     color: "Visible Carbon Fiber",
     price: 1000,
     isConvertible: true,
   },
   {
-    id: 6,
+    id: 5,
     color: "Transparent",
     price: 1000,
     isConvertible: true,

@@ -2,10 +2,9 @@ import { pool } from "../config/database.js";
 
 const getCars = async (req, res) => {
   try {
-    const results = await pool.query("SELECT * FROM cars ORDER BY id ASC");
+    const results = await pool.query("SELECT * FROM cars ORDER BY id DESC");
     res.status(200).json(results.rows);
   } catch (err) {
-    console.log(err);
     res.status(409).json({ error: err.message });
   }
 };
