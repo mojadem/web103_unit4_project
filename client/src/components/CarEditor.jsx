@@ -32,6 +32,8 @@ const CarEditor = ({
     roof &&
     wheels;
 
+  console.log(isCarValid);
+
   return (
     <form>
       <label>

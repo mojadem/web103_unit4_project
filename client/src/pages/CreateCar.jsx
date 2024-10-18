@@ -25,12 +25,14 @@ const CreateCar = () => {
 
   return (
     <div className="container">
-      <article>
-        <h2>Create a car:</h2>
-
-        <CarEditor updateCar={onUpdate} submitCar={onSubmit} {...car} />
-
-        <CarSummary {...car} />
+      <article className="grid">
+        <div>
+          <h2>Create a car:</h2>
+          <CarEditor updateCar={onUpdate} submitCar={onSubmit} {...car} />
+        </div>
+        <div>
+          <CarSummary {...car} />
+        </div>
       </article>
     </div>
   );

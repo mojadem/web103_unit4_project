@@ -11,6 +11,8 @@ const EditCar = () => {
   const defaultCar = { isConvertible: false, name: "" };
   const [car, setCar] = useState(defaultCar);
 
+  console.log(car);
+
   const id = location.pathname.split("/").pop();
 
   useEffect(() => {
@@ -42,14 +44,15 @@ const EditCar = () => {
 
   return (
     <div className="container">
-      <article>
-        <h2>Edit car:</h2>
-
-        <CarEditor updateCar={onUpdate} submitCar={onSubmit} {...car} />
-
-        <CarSummary {...car} />
-
-        <button onClick={deleteCar}>Delete</button>
+      <article className="grid">
+        <div>
+          <h2>Edit car:</h2>
+          <CarEditor updateCar={onUpdate} submitCar={onSubmit} {...car} />
+          <button onClick={deleteCar}>Delete</button>
+        </div>
+        <div>
+          <CarSummary {...car} />
+        </div>
       </article>
     </div>
   );
